@@ -10,6 +10,9 @@ uv sync          # Python 3.12（.python-version）；Memory Maze 在 macOS 需 
 
 ## 實驗
 
+先讀 **[doc/overview.md](doc/overview.md)**：背景、四個實驗的重點結果與總結論。
+
+
 | 實驗 | 內容 | 要訓練？ | 文件 |
 |---|---|---|---|
 | A | YOLO11n 追蹤 + Depth Anything V2 metric → 3D 軌跡 → Kalman 預測未來 | 否 | [doc/exp_a.md](doc/exp_a.md) |
