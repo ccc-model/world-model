@@ -76,8 +76,33 @@ uv run python exp_c/dream.py
 | 做夢速度 | **4,148 步/秒** | 563 步/秒 |
 | 訓練時間 | **46 秒** | 116 秒 |
 
-- 誤差曲線：`out/exp_c_dream_error.png`
-- 夢境影片：`out/exp_c_dream.mp4`（左：真實，中：LSTM，右：Transformer）
+### VAE 重建
+
+上排是真實畫面，下排是經過 32 維 $z$ 重建的畫面。道路形狀、車子和儀表板都保留了，草地上的方塊紋理被抹平。
+
+![VAE 重建](media/exp_c_vae_recon.png)
+
+### 夢境影片
+
+三段測試片段。每排從左到右是真實畫面、LSTM 的夢、Transformer 的夢。
+前 16 幀（context）三者相同；之後模型看不到真實畫面，只拿到真實的動作序列。
+
+![夢境影片](media/exp_c_dream.gif)
+
+完整畫質（H.264）：[media/exp_c_dream.mp4](media/exp_c_dream.mp4)
+
+靜態截圖，由左到右依序是 context、夢境第 15、45、100 步（每段三格：真實 | LSTM | Transformer）：
+
+![夢境截圖](media/exp_c_dream_frames.png)
+
+第二排可以看到兩個模型都想像出彎道，但彎的方向和時機跟真實不同。
+第一排到了第 100 步，真實畫面左側出現了道路，兩個模型卻都還夢成「一片草地」，這是資料偏差造成的（見觀察 7）。
+
+### 開環預測誤差
+
+虛線是兩個參考：VAE 重建是 V 能達到的上限，「複製最後一幀」是什麼都不預測的下限。
+
+![開環誤差曲線](media/exp_c_dream_error.png)
 
 ## 觀察
 

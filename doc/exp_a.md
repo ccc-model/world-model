@@ -56,6 +56,20 @@ curl -L -o data/vtest.avi https://raw.githubusercontent.com/opencv/opencv/4.x/sa
 
 `sigma_a` 掃描（1 s）：0.1 → 1.58、0.3 → 1.26、1.0 → 1.09、3.0 → 1.07，都沒贏過 `static`。
 
+### 標註影片
+
+每個框標出追蹤 ID、類別和估計深度；同色的線是 Kalman 濾波後的位置往前預測 1 秒，再投影回畫面。
+
+![實驗 A：追蹤與 1 秒預測](media/exp_a_forecast.gif)
+
+完整影片（795 幀，H.264）：[media/exp_a_forecast.mp4](media/exp_a_forecast.mp4)
+
+### 鳥瞰圖
+
+點是原始觀測，實線是 Kalman 濾波結果，虛線是預測；黑色三角形是相機。
+
+![實驗 A：鳥瞰圖](media/exp_a_bev.png)
+
 ## 觀察
 
 1. **單眼深度的噪音是主角**。鳥瞰圖右上兩條綠/橘長條是停著的車，卻沿著視線方向被拉成 3–5 m 長，

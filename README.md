@@ -26,3 +26,9 @@ exp_c/     實驗 C：collect.py → train_vae.py → train_m.py → dream.py
 doc/       實驗說明與結果
 data/ out/ models/   資料、輸出、權重（不進 git）
 ```
+
+## 成果一覽
+
+| 實驗 A：單眼 3D 追蹤與預測 | 實驗 C：World Models 做夢 |
+|---|---|
+| ![A](doc/media/exp_a_forecast.gif) | ![C](doc/media/exp_c_dream.gif) |
