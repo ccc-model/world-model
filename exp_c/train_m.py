@@ -44,15 +44,17 @@ def main():
     ap.add_argument("--steps", type=int, default=4000)
     ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--seq", type=int, default=32)
+    ap.add_argument("--context", type=int, default=32, help="Transformer 的 context 長度")
+    ap.add_argument("--prefix", default="exp_c")
     args = ap.parse_args()
     dev = pick_device()
     rng = np.random.default_rng(0)
     torch.manual_seed(0)
 
-    zs = np.load("out/exp_c_z.npy", allow_pickle=True).item()
+    zs = np.load(f"out/{args.prefix}_z.npy", allow_pickle=True).item()
     train = [v for v in zs.values() if v["split"] == "train"]
     test = [v for v in zs.values() if v["split"] == "test"]
-    model = make_m(args.kind).to(dev)
+    model = make_m(args.kind, a_dim=train[0]["act"].shape[1], context=args.context).to(dev)
     n_params = sum(p.numel() for p in model.parameters())
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, args.steps)
@@ -71,9 +73,9 @@ def main():
     train_time = time.time() - t0
     nll = test_nll(model, test, args.seq, dev)
     print(f"test NLL {nll:.3f}  train time {train_time:.0f}s")
-    torch.save(model.state_dict(), f"out/exp_c_m_{args.kind}.pt")
+    torch.save(model.state_dict(), f"out/{args.prefix}_m_{args.kind}.pt")
     json.dump(dict(kind=args.kind, params=n_params, test_nll=nll, train_time=train_time, steps=args.steps),
-              open(f"out/exp_c_m_{args.kind}.json", "w"), indent=2)
+              open(f"out/{args.prefix}_m_{args.kind}.json", "w"), indent=2)
 
 
 if __name__ == "__main__":

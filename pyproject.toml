@@ -2,7 +2,7 @@
 name = "world-model"
 version = "0.1.0"
 description = "世界模型實驗：從單眼 3D 感知到預測世界怎麼變"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 dependencies = [
     "torch>=2.5",
     "ultralytics>=8.3",
@@ -12,6 +12,8 @@ dependencies = [
     "numpy>=1.26",
     "lap>=0.5",
     "gymnasium[box2d]>=1.4.0",
+    "memory-maze>=1.0.3",
+    "gym>=0.26.2",
 ]
 
 [tool.uv]

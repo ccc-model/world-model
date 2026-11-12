@@ -24,13 +24,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--epochs", type=int, default=10)
     ap.add_argument("--bs", type=int, default=128)
+    ap.add_argument("--data", default="data/carracing")
+    ap.add_argument("--prefix", default="exp_c", help="輸出檔名前綴 out/<prefix>_*")
     ap.add_argument("--kl-tol", type=float, default=0.5, help="每維 KL 免費額度（原論文 0.5）")
     args = ap.parse_args()
     dev = pick_device()
     os.makedirs("out", exist_ok=True)
 
-    X = load_frames(rollout_files(split="train"))
-    Xte = load_frames(rollout_files(split="test"))
+    X = load_frames(rollout_files(args.data, split="train"))
+    Xte = load_frames(rollout_files(args.data, split="test"))
     print(f"train {len(X)} frames, test {len(Xte)}, device {dev}")
     vae = VAE().to(dev)
     opt = torch.optim.Adam(vae.parameters(), lr=1e-3)
@@ -51,7 +53,7 @@ def main():
             x = to_tensor(Xte[::20], dev)
             te = ((vae.decode(vae.encode(x)[0]) - x) ** 2).mean().item()
         print(f"  epoch {ep}  recon {rl / n:.1f}  KL {kl / n:.1f}  test MSE/pixel {te:.5f}  {time.time() - t0:.0f}s")
-    torch.save(vae.state_dict(), "out/exp_c_vae.pt")
+    torch.save(vae.state_dict(), f"out/{args.prefix}_vae.pt")
 
     # 重建對照圖
     with torch.no_grad():
@@ -63,18 +65,18 @@ def main():
         ax[0, j].imshow(Xte[idx[j]]); ax[1, j].imshow(rec[j])
         ax[0, j].axis("off"); ax[1, j].axis("off")
     ax[0, 0].set_title("real", loc="left"); ax[1, 0].set_title("VAE (z=32)", loc="left")
-    fig.tight_layout(); fig.savefig("out/exp_c_vae_recon.png", dpi=90); plt.close(fig)
+    fig.tight_layout(); fig.savefig(f"out/{args.prefix}_vae_recon.png", dpi=90); plt.close(fig)
 
     # 把每個回合編碼成 (mu, logvar) 序列
     zs = {}
     with torch.no_grad():
         for split in ("train", "test"):
-            for f in rollout_files(split=split):
+            for f in rollout_files(args.data, split=split):
                 d = np.load(f)
                 mu, lv = vae.encode(to_tensor(d["obs"], dev))
                 zs[os.path.basename(f)] = dict(mu=mu.cpu().numpy(), logvar=lv.cpu().numpy(), act=d["act"], split=split)
-    np.save("out/exp_c_z.npy", zs, allow_pickle=True)
-    print(f"done in {time.time() - t0:.0f}s → out/exp_c_vae.pt, out/exp_c_z.npy, out/exp_c_vae_recon.png")
+    np.save(f"out/{args.prefix}_z.npy", zs, allow_pickle=True)
+    print(f"done in {time.time() - t0:.0f}s → out/{args.prefix}_vae.pt, _z.npy, _vae_recon.png")
 
 
 if __name__ == "__main__":

@@ -68,9 +68,9 @@ class MDNHead(nn.Module):
 
 
 class MDNLSTM(nn.Module):
-    def __init__(self, hidden=256):
+    def __init__(self, hidden=256, a_dim=A_DIM):
         super().__init__()
-        self.rnn = nn.LSTM(Z_DIM + A_DIM, hidden, batch_first=True)
+        self.rnn = nn.LSTM(Z_DIM + a_dim, hidden, batch_first=True)
         self.head = MDNHead(hidden)
 
     def forward(self, z, a, state=None):
@@ -79,10 +79,10 @@ class MDNLSTM(nn.Module):
 
 
 class MDNTransformer(nn.Module):
-    def __init__(self, d=128, layers=4, heads=4, context=32):
+    def __init__(self, d=128, layers=4, heads=4, context=32, a_dim=A_DIM):
         super().__init__()
         self.context = context
-        self.inp = nn.Linear(Z_DIM + A_DIM, d)
+        self.inp = nn.Linear(Z_DIM + a_dim, d)
         self.pos = nn.Parameter(torch.zeros(context, d))
         layer = nn.TransformerEncoderLayer(d, heads, 4 * d, dropout=0.0, batch_first=True, norm_first=True)
         self.tf = nn.TransformerEncoder(layer, layers)
@@ -96,5 +96,7 @@ class MDNTransformer(nn.Module):
         return self.head(h), h, None
 
 
-def make_m(kind):
-    return {"lstm": MDNLSTM, "transformer": MDNTransformer}[kind]()
+def make_m(kind, a_dim=A_DIM, context=32):
+    if kind == "lstm":
+        return MDNLSTM(a_dim=a_dim)
+    return MDNTransformer(context=context, a_dim=a_dim)
