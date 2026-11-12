@@ -218,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# 實驗輸出與資料
+out/
+data/
+*.pt
