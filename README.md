@@ -11,6 +11,7 @@ uv sync          # Python 3.12（.python-version）；Memory Maze 在 macOS 需 
 ## 實驗
 
 先讀 **[doc/overview.md](doc/overview.md)**：背景、各實驗的重點結果與總結論。
+世界模型和強化學習的關係見 [doc/rl_vs_world_model.md](doc/rl_vs_world_model.md)。
 
 
 | 實驗 | 內容 | 要訓練？ | 文件 |
