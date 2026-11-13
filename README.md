@@ -10,7 +10,7 @@ uv sync          # Python 3.12（.python-version）；Memory Maze 在 macOS 需 
 
 ## 實驗
 
-先讀 **[doc/overview.md](doc/overview.md)**：背景、四個實驗的重點結果與總結論。
+先讀 **[doc/overview.md](doc/overview.md)**：背景、各實驗的重點結果與總結論。
 
 
 | 實驗 | 內容 | 要訓練？ | 文件 |
@@ -19,6 +19,7 @@ uv sync          # Python 3.12（.python-version）；Memory Maze 在 macOS 需 
 | B1 | KITTI Tracking 3D 真值軌跡 → 小 GRU vs. 等速基準，含模擬單眼噪音 | 是（20 秒） | [doc/exp_b.md](doc/exp_b.md) |
 | C | World Models (CarRacing)：VAE 潛在空間 + MDN-LSTM vs. MDN-Transformer 做夢 | 是（約 35 分鐘） | [doc/exp_c.md](doc/exp_c.md) |
 | D | Memory Maze 第一人稱 3D 迷宮：探針與「夢裡轉圈」考 3D 世界模型 | 是（約 35 分鐘） | [doc/exp_d.md](doc/exp_d.md) |
+| E | 跑現成的 diffusion 世界模型 DIAMOND（Atari 預訓練權重）：夢 vs 真實 | 否（約 12 分鐘） | [doc/exp_e.md](doc/exp_e.md) |
 
 ## 結構
 
@@ -28,6 +29,8 @@ exp_a/     實驗 A：track3d.py（感知）、forecast.py（動態）
 exp_b/     實驗 B1：kitti.py（讀取＋座標轉換）、train.py（GRU 與基準）
 exp_c/     實驗 C：collect.py → train_vae.py → train_m.py → dream.py
 exp_d/     實驗 D：collect.py（Memory Maze）、evaluate.py（探針＋轉圈）；V/M 沿用 exp_c
+exp_e/     實驗 E：diamond_dream.py（用 external/diamond 的獨立環境執行）
+external/  第三方程式碼（DIAMOND），不進 git
 doc/       實驗說明與結果
 data/ out/ models/   資料、輸出、權重（不進 git）
 ```
@@ -41,3 +44,7 @@ data/ out/ models/   資料、輸出、權重（不進 git）
 | 實驗 D：3D 迷宮裡夢中轉圈（左：真實，中：LSTM，右：Transformer） |
 |---|
 | ![D](doc/media/exp_d_turn.gif) |
+
+| 實驗 E：DIAMOND 預訓練世界模型（左：真實，中：夢，右：agent 在夢裡玩） |
+|---|
+| ![E](doc/media/exp_e_Breakout.gif) |
