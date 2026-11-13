@@ -56,7 +56,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="configs/follower_gpt_beta0.9_final.yaml")
     ap.add_argument("--ckpt", default=None, help="follower GPT 權重；預設 experiments/<expname>/ckpt/epoch_<ckpt_epoch>.pt")
-    ap.add_argument("--genre", default="Jive")
+    ap.add_argument("--genre", default="Jive", help="舞種，或 all")
     ap.add_argument("--out", default=str(ROOT / "out" / "exp_f"))
     args = ap.parse_args()
     args.out = os.path.join(_CWD, args.out)      # 相對路徑以啟動時的資料夾為準
@@ -76,12 +76,14 @@ def main():
     d = cfg.data.test
     ds = DD100lfAll(d.music_root, d.data_root, split=d.split, interval=None, dtype=d.dtype, move=d.move, music_dance_rate=1)
     genres = sorted({n.split("_")[0] for n in ds.names})
-    idx = [i for i, n in enumerate(ds.names) if n.split("_")[0].lower() == args.genre.lower()]
+    idx = [i for i, n in enumerate(ds.names) if args.genre == "all" or n.split("_")[0].lower() == args.genre.lower()]
     print(f"test set: {len(ds)} clips, genres {genres}; {args.genre}: {len(idx)} clips", flush=True)
 
     for i in idx:
         b = {k: torch.as_tensor(np.asarray(v))[None] if k != "fname" else v for k, v in ds[i].items()}
         name = b["fname"]
+        if os.path.exists(os.path.join(args.out, f"{name}.npz")):
+            continue                                     # 已生成過就跳過
         music, pl, pf = b["music"].float(), b["pos3dl"].float().clone(), b["pos3df"].float().clone()
         real_f, real_l = pf[0].numpy().copy(), pl[0].numpy().copy()
 

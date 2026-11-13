@@ -39,8 +39,9 @@ def main():
     ap.add_argument("--dir", default="out/exp_f")
     ap.add_argument("--rl", default=None, help="RL 版的輸出資料夾（同檔名），有給就多一欄")
     ap.add_argument("--seconds", type=float, default=30, help="影片長度上限")
+    ap.add_argument("--videos-per-genre", type=int, default=99, help="每個舞種最多錄幾段影片（指標照樣全算）")
     args = ap.parse_args()
-    report = {}
+    report, n_video = {}, {}
     files = sorted(glob.glob(f"{args.dir}/*.npz"))
     if not files:
         print(f"{args.dir}/ 裡沒有 .npz：請先執行 exp_f/duolando_follow.py 產生結果")
@@ -65,9 +66,19 @@ def main():
         titles = ["real couple", "Duolando GPT"]
         if "rl" in gens:
             panels.append(([L[:n], gens["rl"][:n]], [BLUE, GREEN])); titles.append("Duolando + RL")
-        render_video(panels, f"{args.dir}/{name}.mp4", fps=fps, titles=titles)
+        genre = name.split("_")[0]
+        n_video[genre] = n_video.get(genre, 0) + 1
+        if n_video[genre] <= args.videos_per_genre:
+            render_video(panels, f"{args.dir}/{name}.mp4", fps=fps, titles=titles)
         print(name, json.dumps(report[name]), flush=True)
     json.dump(report, open(f"{args.dir}/metrics.json", "w"), indent=2)
+    # 依舞種平均
+    keys = ["partner_distance_m", "hand_contact_ratio", "overlap_ratio", "mean_speed_mps", "foot_slide_mps"]
+    print(f"\n{'genre':10s} {'n':>2s}  " + "  ".join(f"{k[:14]:>20s}" for k in keys) + "   (real / gpt / rl)")
+    for g in sorted({n.split('_')[0] for n in report}):
+        rows = [r for n, r in report.items() if n.split("_")[0] == g]
+        cell = lambda k: " / ".join(f"{np.mean([r[m][k] for r in rows]):.2f}" for m in ("real", "gpt", "rl") if m in rows[0])
+        print(f"{g:10s} {len(rows):2d}  " + "  ".join(f"{cell(k):>20s}" for k in keys))
 
 
 if __name__ == "__main__":

@@ -32,8 +32,8 @@ exp_b/     實驗 B1：kitti.py（讀取＋座標轉換）、train.py（GRU 與�
 exp_c/     實驗 C：collect.py → train_vae.py → train_m.py → dream.py
 exp_d/     實驗 D：collect.py（Memory Maze）、evaluate.py（探針＋轉圈）；V/M 沿用 exp_c
 exp_e/     實驗 E：diamond_dream.py（用 external/diamond 的獨立環境執行）
-exp_f/     實驗 F：duolando_follow.py（用 external/duolando 的環境）、render_duet.py、puppet.py（MuJoCo 木偶人）
-external/  第三方程式碼（DIAMOND、Duolando），不進 git
+exp_f/     實驗 F：duolando_follow.py（用 external/duolando 的環境）、render_duet.py、puppet.py（MuJoCo 木偶人）、g1_retarget.py（套到 G1）
+external/  第三方程式碼（DIAMOND、Duolando、mujoco_menagerie 的 G1），不進 git
 doc/       實驗說明與結果
 data/ out/ models/   資料、輸出、權重（不進 git）
 ```
@@ -55,3 +55,7 @@ data/ out/ models/   資料、輸出、權重（不進 git）
 | 實驗 F：雙人 Jive 跟舞（左：真實，中：Duolando GPT，右：+RL；藍色男方皆為真實資料） |
 |---|
 | ![F](doc/media/exp_f_jive.gif) |
+
+| 實驗 F 延伸：同樣的 Jive 套到兩台 Unitree G1 |
+|---|
+| ![F-G1](doc/media/exp_f_g1.gif) |
