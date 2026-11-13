@@ -21,6 +21,7 @@ uv sync          # Python 3.12（.python-version）；Memory Maze 在 macOS 需 
 | C | World Models (CarRacing)：VAE 潛在空間 + MDN-LSTM vs. MDN-Transformer 做夢 | 是（約 35 分鐘） | [doc/exp_c.md](doc/exp_c.md) |
 | D | Memory Maze 第一人稱 3D 迷宮：探針與「夢裡轉圈」考 3D 世界模型 | 是（約 35 分鐘） | [doc/exp_d.md](doc/exp_d.md) |
 | E | 跑現成的 diffusion 世界模型 DIAMOND（Atari 預訓練權重）：夢 vs 真實 | 否（約 12 分鐘） | [doc/exp_e.md](doc/exp_e.md) |
+| F | 雙人舞跟舞：給真實男方與音樂，Duolando 生成女方（DD100 Jive），MuJoCo 雙木偶人播放 | 否（約 15 分鐘，下載 7 GB） | [doc/exp_f.md](doc/exp_f.md) |
 
 ## 結構
 
@@ -31,7 +32,8 @@ exp_b/     實驗 B1：kitti.py（讀取＋座標轉換）、train.py（GRU 與�
 exp_c/     實驗 C：collect.py → train_vae.py → train_m.py → dream.py
 exp_d/     實驗 D：collect.py（Memory Maze）、evaluate.py（探針＋轉圈）；V/M 沿用 exp_c
 exp_e/     實驗 E：diamond_dream.py（用 external/diamond 的獨立環境執行）
-external/  第三方程式碼（DIAMOND），不進 git
+exp_f/     實驗 F：duolando_follow.py（用 external/duolando 的環境）、render_duet.py、puppet.py（MuJoCo 木偶人）
+external/  第三方程式碼（DIAMOND、Duolando），不進 git
 doc/       實驗說明與結果
 data/ out/ models/   資料、輸出、權重（不進 git）
 ```
@@ -49,3 +51,7 @@ data/ out/ models/   資料、輸出、權重（不進 git）
 | 實驗 E：DIAMOND 預訓練世界模型（左：真實，中：夢，右：agent 在夢裡玩） |
 |---|
 | ![E](doc/media/exp_e_Breakout.gif) |
+
+| 實驗 F：雙人 Jive 跟舞（左：真實，中：Duolando GPT，右：+RL；藍色男方皆為真實資料） |
+|---|
+| ![F](doc/media/exp_f_jive.gif) |
